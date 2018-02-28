@@ -1,0 +1,144 @@
+
+/////////////////////// Check=1 ველი მოწმდება, Check=0 ან 2 არ მოწმდება     //////////////////////////////
+////////////////////////  check=1-ზე მოგაქვს Max value
+
+
+STK
+action
+AppID
+HashSum_AppID_
+ClientID
+HashSum_ClientID_
+IndustryID{
+if(IndustryCheck==2)
+    lookup (page=sys) Industry
+    else
+    Industry in product detail
+}
+IndustrySubID{
+    lookup(page=sys): IndustrySub filtered by ORG_IndustryID (IndustryID)
+}
+BusinessType -string
+Address - არ გჭირდება
+CityID - არ გჭირდება
+ReqAmount{
+     "AmountMin","AmountMax" in CCY
+}
+ReqCurrency{
+    CCYCheck,CCY in product
+    if(CCYCheck==2) lookup(page=sys) CCY
+}
+Interest{
+    "InterestCheck"
+    "InterestMin"
+    "InterestMax"
+}
+InterestType{
+    FlatCheck, Flat
+    if(FlatCheck==2) Flat_LKP
+}
+UpfrontID{
+    UpfrontInterestCheck, UpfrontInterest, UpfrontInterest_LKP
+    შესასწორებელია და check=1-სთვის დაბრუნდება ერთი მნიშვნელობა
+}
+ScheduleTypeID{
+    ScheduleTypeCheck,ScheduleType
+    lookup (page=sys) ScheduleType
+}
+PayFreqValue{
+    "PayFreqCheck"
+    "PayFreqValue"
+}
+PayFreqPeriod{
+    PayFreqCheck
+    PayFreqPeriodID
+    else
+    PayFreqPeriod_LKP
+}
+DurationMonths{ არ გჭირდება
+ "MonthDaysCheck": 0,
+    "MonthDays": "0000000000000000000000000000000",
+}
+DurationDays{ ამით ამოწმებ დღეებს, თვეს და გადახდებს
+    "TermDaysCheck"
+    "TermDaysMin"
+    "TermDaysMax"
+}
+?-GracePeriod{
+    "GracePeriodCheck": 0
+    "GracePeriodMin"
+    "GracePeriodMax"
+}
+GracePeriodInt{
+    "GracePeriodIntCheck": 1
+    "GracePeriodIntMin"
+    "GracePeriodIntMax"
+}
+PurposeID{
+    PurposeCheck,Purpose
+    else
+    lookup (page=sys) APP_Purpose
+}
+OtherPurpose -string
+OtherPurpose2 -string
+ManagerID {
+    ავტორიზებული მომხმარებელი ემატება default-ად და არის disabled
+    lookup(page=sys) ManagerActive
+}
+ResourceID{
+    ResourceCheck,Resource
+}
+ProductID{
+    product_view_api (page=list)
+}
+Startup{
+   lookup(page=sys): APP_Startup
+}
+PurposeSum {
+    Purpose2Sum+PurposeSum= ReqAmount
+}
+Purpose2ID{
+    PurposeCheck,Purpose
+    else
+    lookup (page=sys) APP_Purpose2
+}
+Purpose2Sum {
+    Purpose2Sum+PurposeSum= ReqAmount
+}
+AgreeNumber განაცხადის დამატების შემდეგ ბრუნდება
+Contribution
+ProjectDescription
+//NodeID ამოღებულია
+RevolvingID{
+    RevolvingCheck,Revolving
+    if(RevolvingCheck!==1) Revolving_LKP
+}
+RepaymentSourceID{
+    lookup(page=sys) APP_Repayment_Source
+}
+InfoSourceID არ გჭირდება {
+    lookup(page=sys) APP_InfoSource
+}
+GracePeriod_InterestAccrual -საშეღავათო პერიოდი პროცენტის დარიცხვაზე
+{
+    GracePeriod_InterestAccrual=0,
+    GracePeriod_InterestAccrual_Max
+    GracePeriod_InterestAccrual_Check
+}
+AppScreening =0 ახალი განაცხადის დამატებისას
+CField1
+CField2
+CField3
+CField4  //4-ვე განაცხადს თავისი ველი აქვს. პროდუქტის CField-ები არაა დაკავშირებული
+DynFields [ჯერ ვტოვებთ]`
+მეორე გვერდზე თარიღები:
+1. საოპერაციო დღე 2. საოპერაციო დღეს+ TermDays
+
+///////////////////////////////////////////////////////
+მთავარ გვერდზე დამატებითი ინფორმაციის გამოჩენა:
+
+watchlist-ში თუ არის კლიენტი ბრუნდება მეორე ხაზზე ტექსტი
+blacklist-ში თუ არის კლიენტი მაშინ კლიენტების ძებნაში არ გამოჩნდება
+თუ კლიენტს აქვს პარალელური, დაკავშირებული სესხები პირველ ხაზზე ბრუნდება  button "სესხებზე" ინფორმაცია
+კლიენტის დეტალებისთვის button ამოსაღებია
+
